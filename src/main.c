@@ -10,5 +10,14 @@
 #include "main.h"
 
 int main(void) {
+	// Open SPI
+	open_SPI();
+	while(true) {
+	// Send command to start recording data
+
+	// Read data from SPI
+
+	// Send data to Azure
+	}
 	return 0;
 }

@@ -16,9 +16,12 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define WRITE_REG		0x0231
 
+
+void open_SPI();
 
 #ifdef __cplusplus
 }
