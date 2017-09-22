@@ -17,11 +17,17 @@ extern "C" {
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#include "wiringPiSPI.h"
+#include "wiringPi.h"
+
 
 #define WRITE_REG		0x0231
 
 
-void open_SPI();
+bool openSPI();
+void writeSPI();
+void readSPI(uint8_t *data_ptr);
+void sendToAzure(uint8_t *data_ptr);
 
 #ifdef __cplusplus
 }
