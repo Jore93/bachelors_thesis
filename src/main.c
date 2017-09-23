@@ -1,23 +1,25 @@
 /*
  * main.c
  *
- *	This is main for my Bachelor's thesis work with RasPi and ADIS 16227 vibration sensor.
- *	Code is runs vibration sensor connected to RasPi 3 and then send data to cloud via 5GTN
- *  Created on: 31.8.2017
- *      Author: Jore
+ *  Created on: 23.9.2017
+ *      Author: jore
  */
 
 #include "main.h"
 
-int main(void) {
-	// Open SPI
-	open_SPI();
-	while(true) {
-	// Send command to start recording data
-
-	// Read data from SPI
-
-	// Send data to Azure
+int main() {
+	bool ret;
+	uint8_t data_ptr;
+	// Init and open SPI
+	ret = openSPI();
+	if(ret) {
+		while(true) {
+		// Send data to sensor
+			void writeSPI();
+		// Read data from sensor
+			void readSPI(uint8_t *data_ptr);
+		// Send data to Azure via 5G
+			void sendToAzure(uint8_t *data_ptr);
+		}
 	}
-	return 0;
 }
