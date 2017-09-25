@@ -1,7 +1,7 @@
 /*
  * main.c
  *
- *  Created on: 23.9.2017
+ *  Created on: 25.9.2017
  *      Author: jore
  */
 
@@ -9,17 +9,29 @@
 
 int main() {
 	bool ret;
-	uint8_t data_ptr;
-	// Init and open SPI
-	ret = openSPI();
-	if(ret) {
-		while(true) {
-		// Send data to sensor
-			void writeSPI();
-		// Read data from sensor
-			void readSPI(uint8_t *data_ptr);
-		// Send data to Azure via 5G
-			void sendToAzure(uint8_t *data_ptr);
+	uint8_t *data_ptr, *tmp, n = 13;
+	tmp = calloc(1, 5*sizeof(char));
+
+	if(tmp != NULL) {
+		data_ptr = tmp;
+	} else {
+		while(tmp != NULL) {
+			tmp = calloc(1, n*sizeof(char));
+			n--;
 		}
 	}
+
+	ret = openSPI();
+
+	while(ret && tmp != NULL) {
+		writeSPI();
+		readSPI(data_ptr, 4);
+		sendToAzure(data_ptr);
+	}
+
+	if(tmp != NULL) {
+		free(data_ptr);
+	}
 }
+
+
