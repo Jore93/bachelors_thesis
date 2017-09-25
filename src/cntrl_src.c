@@ -35,7 +35,7 @@ void writeSPI() {
 	delay(43);					// Sampling time when using SR1 is 42.15 ms
 }
 
-void readSPI(uint8_t *data_ptr, int range) {
+void readSPI(uint16_t *data_ptr, int range) {
 	/* These calculations are for 0g to 70g range, change the value of n depending on what range you are using.
 	 * n is the coefficient to use
 	 *
@@ -46,39 +46,57 @@ void readSPI(uint8_t *data_ptr, int range) {
 	 * 4: 0g to 70g
 	 */
 
-	digitalWrite(12, REC_CTRL);
+	uint16_t true_value(uint16_t value) {
+		uint16_t data, n;
+		if(range == 1) {
+			n = 0.0305;
+		}
+		else if(range == 2) {
+			n = 0.1526;
+		}
+		else if(range == 3) {
+			n = 0.6104;
+		}
+		else if(range == 4) {
+			n = 2.3842;
+		}
+		else {
+			n = 0;
+		}
+
+		if(value < 0x8000) {
+			data = value * n;
+		}
+		else if(value > 0x7FFF) {
+			data = -(0xFFFF - value -1) * n;
+		}
+		else {
+			data = 0;
+		}
+		return data;
+	}
+
+	uint16_t x_value, y_value, z_value;
+
+	digitalWrite(12, X_BUF);
 	digitalWrite(12, READ_REG);
-	int value, n;
-	value = digitalRead(13);
+	x_value = digitalRead(13);
+	data_ptr[0] = true_value(x_value);
 
-	if(range == 1) {
-		n = 0.0305;
-	}
-	else if(range == 2) {
-		n = 0.1526;
-	}
-	else if(range == 3) {
-		n = 0.6104;
-	}
-	else if(range == 4) {
-		n = 2.3842;
-	}
-	else {
-		n = 0;
-	}
+	digitalWrite(12, Y_BUF);
+	digitalWrite(12, READ_REG);
+	y_value = digitalRead(13);
+	data_ptr[1] = true_value(y_value);
 
-	if(value < 0x8000) {
-		*data_ptr = value * n;
-	}
-	else if(value > 0x7FFF) {
-		*data_ptr = -(0xFFFF - value -1) * n;
-	}
-	else {
-		data_ptr = NULL;
-	}
+	digitalWrite(12, Z_BUF);
+	digitalWrite(12, READ_REG);
+	z_value = digitalRead(13);
+	data_ptr[2] = true_value(z_value);
+
+
 }
 
-void sendToAzure(uint8_t *data_ptr) {
+void sendToAzure(uint16_t *data_ptr) {
 	// Send data from data_ptr to Azure
 }
 

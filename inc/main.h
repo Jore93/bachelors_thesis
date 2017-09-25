@@ -28,8 +28,8 @@ extern "C" {
 
 bool openSPI();
 void writeSPI();
-void readSPI(uint8_t *data_ptr, int range);
-void sendToAzure(uint8_t *data_ptr);
+void readSPI(uint16_t *data_ptr, int range);
+void sendToAzure(uint16_t *data_ptr);
 
 #ifdef __cplusplus
 }
