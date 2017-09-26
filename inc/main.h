@@ -22,14 +22,19 @@ extern "C" {
 #include "reg_def.h"
 
 
-#define WRITE_REG		0x0231
-#define READ_REG		0x5600		// Not actual
+#define WRITE_REG		0x0232
+#define READ_REG		0x0000		// Index of value you want to read
 
+struct axes {
+	uint16_t x;
+	uint16_t y;
+	uint16_t z;
+};
 
 bool openSPI();
 void writeSPI();
-void readSPI(uint16_t *data_ptr, int range);
-void sendToAzure(uint16_t *data_ptr);
+void readSPI(struct axes *data_ptr, int range, int i);
+void sendToAzure(struct axes *data_ptr);
 
 #ifdef __cplusplus
 }

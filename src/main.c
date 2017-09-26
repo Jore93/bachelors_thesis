@@ -9,25 +9,23 @@
 
 int main() {
 	bool ret;
-	uint16_t *data_ptr, *tmp, n;
-	n = 3;
-	tmp = malloc((n+1)*sizeof(uint16_t));
+	int i = 0;
+	struct axes *data_ptr, *tmp;
+
+	tmp = calloc(1, sizeof(struct axes));
 
 	if(tmp != NULL) {
 		data_ptr = tmp;
-	} else {
-		while(tmp != NULL) {
-			tmp = calloc(1, (n+1)*sizeof(uint16_t));
-			n--;
-		}
 	}
 
 	ret = openSPI();
 
 	while(ret && tmp != NULL) {
 		writeSPI();
-		readSPI(data_ptr, 4);
+		readSPI(data_ptr, 4, i);
 		sendToAzure(data_ptr);
+		i++;
+		memset(data_ptr, 0, sizeof(struct axes));
 	}
 
 	if(tmp != NULL) {
