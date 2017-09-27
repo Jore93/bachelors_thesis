@@ -5,25 +5,10 @@
  *      Author: jore
  */
 
-#include "main.h"
+#include "spi.h"
 
 
-bool openSPI() {
-	int ret;
-	ret = wiringPiSPISetup(0, BAUD);
-	printf("%d\n", ret);
-	pinMode(MOSI, OUTPUT);          // MOSI
-	pinMode(MISO, INPUT);           // MISO
-	pinMode(SCLK, GPIO_CLOCK);      // SCLK
-	pinMode(CE0, OUTPUT);          	// CE0
-//	pinMode(0, OUTPUT);           	// RST
-	if(ret == 0) {
-		return false;
-	}
-	return true;
-}
-
-void writeSPI() {
+void writeSPI(int fd) {
 /*
  *
  *  A single register read requires two 16-bit SPI cycles. The first sequence sets
@@ -32,14 +17,30 @@ void writeSPI() {
  *	actual message to register.
  *
  */
-	digitalWrite(MOSI, REC_CTRL);
-	digitalWrite(MOSI, 0);
-	digitalWrite(MOSI, WRITE_REG >> 8);
-	digitalWrite(MOSI, WRITE_REG & 0x00FF);
-	delay(43);		// Sampling time when using SR1 is 42.15 ms
+	int ret;
+	static uint8_t bits = 8;
+	static uint32_t speed = 500000;
+	static uint16_t delay = 42150;
+
+	uint8_t tx[] = {
+			0x02, 0x32
+	};
+
+	uint8_t rx[ARRAY_SIZE(tx)] = {0, };
+
+	struct spi_ioc_transfer tr = {
+		.tx_buf = (unsigned long)tx,
+		.rx_buf = (unsigned long)rx,
+		.len = ARRAY_SIZE(tx),
+		.delay_usecs = delay,
+		.speed_hz = speed,
+		.bits_per_word = bits,
+	};
+
+	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 }
 
-void readSPI(struct axes *data_ptr, int range, int i) {
+void readSPI(struct axes *data_ptr, int range, int fd) {
 	/* These calculations are for 0g to 70g range, change the value of n depending on what range you are using.
 	 *
 	 * Range:
@@ -81,24 +82,37 @@ void readSPI(struct axes *data_ptr, int range, int i) {
 	}
 
 	struct axes value;
+	int ret;
+	static uint8_t bits = 8;
+	static uint32_t speed = 500000;
 
-	digitalWrite(MOSI, X_BUF);
-	digitalWrite(MOSI, 0);
-	digitalWrite(MOSI, i);
+	uint8_t tx[] = {
+			0x02, 0x32
+	};
+
+	uint8_t rx[ARRAY_SIZE(tx)] = {0, };
+
+	struct spi_ioc_transfer tr = {
+		.tx_buf = (unsigned long)tx,
+		.rx_buf = (unsigned long)rx,
+		.len = ARRAY_SIZE(tx),
+		.speed_hz = speed,
+		.bits_per_word = bits,
+	};
+
+	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	for(ret = 0; ret < ARRAY_SIZE(tx); ret++) {
+		printf("%.2X ", rx[ret]);
+	}
+	/*
 	value.x = digitalRead(MISO);
 	data_ptr->x = acceleration(value.x);
 
-	digitalWrite(MOSI, Y_BUF);
-	digitalWrite(MOSI, 0);
-	digitalWrite(MOSI, i);
 	value.y = digitalRead(MISO);
 	data_ptr->y = acceleration(value.y);
 
-	digitalWrite(MOSI, Z_BUF);
-	digitalWrite(MOSI, 0);
-	digitalWrite(MOSI, i);
 	value.z = digitalRead(MISO);
-	data_ptr->z = acceleration(value.z);
+	data_ptr->z = acceleration(value.z);*/
 }
 
 void sendToAzure(struct axes *data_ptr) {
