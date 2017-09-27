@@ -96,6 +96,6 @@ void readSPI(struct axes *data_ptr, int range, int i) {
 
 void sendToAzure(struct axes *data_ptr) {
 	// Send data from data_ptr to Azure
-	printf("x axis: %d\ny axis: %d\n z axis: %d\n\n", data_ptr->x, data_ptr->y, data_ptr->z);
+	printf("x axis: %d\ny axis: %d\nz axis: %d\n\n", data_ptr->x, data_ptr->y, data_ptr->z);
 }
 

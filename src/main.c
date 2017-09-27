@@ -20,7 +20,7 @@ int main() {
 
 	ret = openSPI();
 
-	while(ret && tmp != NULL) {
+	while(i < 10) {//ret && tmp != NULL) {
 		writeSPI();
 		readSPI(data_ptr, 4, i);
 		sendToAzure(data_ptr);
