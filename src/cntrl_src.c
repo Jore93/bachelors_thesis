@@ -6,6 +6,7 @@
  */
 
 #include "spi.h"
+#include "reg_def.h"
 
 
 void writeSPI(int fd) {
@@ -23,6 +24,7 @@ void writeSPI(int fd) {
 	static uint16_t delay = 42150;
 
 	uint8_t tx[] = {
+			REC_CTRL, 0x00,
 			0x02, 0x32
 	};
 
@@ -87,7 +89,8 @@ void readSPI(struct axes *data_ptr, int range, int fd) {
 	static uint32_t speed = 500000;
 
 	uint8_t tx[] = {
-			0x02, 0x32
+			X_BUF, 0x00,
+			0x00, 0x00
 	};
 
 	uint8_t rx[ARRAY_SIZE(tx)] = {0, };
@@ -107,10 +110,16 @@ void readSPI(struct axes *data_ptr, int range, int fd) {
 	/*
 	value.x = digitalRead(MISO);
 	data_ptr->x = acceleration(value.x);
-
+	tx[] = {
+		Y_BUF, 0x00,
+		0x00, 0x00
+	};
 	value.y = digitalRead(MISO);
 	data_ptr->y = acceleration(value.y);
-
+	tx[] = {
+		Z_BUF, 0x00,
+		0x00, 0x00
+	};
 	value.z = digitalRead(MISO);
 	data_ptr->z = acceleration(value.z);*/
 }
