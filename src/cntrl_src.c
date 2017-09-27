@@ -7,6 +7,7 @@
 
 #include "main.h"
 
+
 bool openSPI() {
 	int ret;
 	ret = wiringPiSPISetup(0, 9600);
@@ -30,8 +31,8 @@ void writeSPI() {
  *	actual message to register.
  *
  */
-	digitalWrite(12, REC_CTRL);
-	digitalWrite(12, WRITE_REG);
+	digitalWrite(MOSI, REC_CTRL);
+	digitalWrite(MOSI, WRITE_REG);
 	delay(43);		// Sampling time when using SR1 is 42.15 ms
 }
 
@@ -78,19 +79,19 @@ void readSPI(struct axes *data_ptr, int range, int i) {
 
 	struct axes value;
 
-	digitalWrite(12, X_BUF);
-	digitalWrite(12, i);
-	value.x = digitalRead(13);
+	digitalWrite(MOSI, X_BUF);
+	digitalWrite(MOSI, i);
+	value.x = digitalRead(MISO);
 	data_ptr->x = acceleration(value.x);
 
-	digitalWrite(12, Y_BUF);
-	digitalWrite(12, i);
-	value.y = digitalRead(13);
+	digitalWrite(MOSI, Y_BUF);
+	digitalWrite(MOSI, i);
+	value.y = digitalRead(MISO);
 	data_ptr->y = acceleration(value.y);
 
-	digitalWrite(12, Z_BUF);
-	digitalWrite(12, i);
-	value.z = digitalRead(13);
+	digitalWrite(MOSI, Z_BUF);
+	digitalWrite(MOSI, i);
+	value.z = digitalRead(MISO);
 	data_ptr->z = acceleration(value.z);
 }
 
