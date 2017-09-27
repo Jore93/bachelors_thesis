@@ -22,6 +22,11 @@ extern "C" {
 #include "reg_def.h"
 
 
+#define MOSI 			19
+#define MISO 			21
+#define SCLK 			23
+#define CE0				24
+
 #define WRITE_REG		0x0232
 #define READ_REG		0x0000		// Index of value you want to read
 
