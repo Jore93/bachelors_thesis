@@ -11,10 +11,10 @@
 bool openSPI() {
 	int ret;
 	ret = wiringPiSPISetup(0, 9600);
-	pinMode(19, OUTPUT);          // MOSI
-	pinMode(21, INPUT);           // MISO
-	pinMode(23, GPIO_CLOCK);      // SCLK
-	pinMode(24, OUTPUT);          // CE0
+	pinMode(MOSI, OUTPUT);          // MOSI
+	pinMode(MISO, INPUT);           // MISO
+	pinMode(SCLK, GPIO_CLOCK);      // SCLK
+	pinMode(CE0, OUTPUT);          // CE0
 //	pinMode(0, OUTPUT);           // RST
 	if(ret == 0) {
 		return false;
