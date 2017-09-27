@@ -15,8 +15,8 @@ bool openSPI() {
 	pinMode(MOSI, OUTPUT);          // MOSI
 	pinMode(MISO, INPUT);           // MISO
 	pinMode(SCLK, GPIO_CLOCK);      // SCLK
-	pinMode(CE0, OUTPUT);          // CE0
-//	pinMode(0, OUTPUT);           // RST
+	pinMode(CE0, OUTPUT);          	// CE0
+//	pinMode(0, OUTPUT);           	// RST
 	if(ret == 0) {
 		return false;
 	}

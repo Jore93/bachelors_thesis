@@ -6,7 +6,7 @@
  */
 
 #include "main.h"
-
+/*
 int main() {
 	bool ret;
 	int i = 0;
@@ -32,5 +32,5 @@ int main() {
 		free(data_ptr);
 	}
 }
-
+*/
 

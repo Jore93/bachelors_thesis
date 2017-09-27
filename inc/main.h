@@ -31,6 +31,8 @@ extern "C" {
 #define WRITE_REG		0x0232
 #define READ_REG		0x0000		// Index of value you want to read
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+
 struct axes {
 	uint16_t x;
 	uint16_t y;
