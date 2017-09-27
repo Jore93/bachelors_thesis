@@ -10,7 +10,7 @@
 
 bool openSPI() {
 	int ret;
-	ret = wiringPiSPISetup(0, 9600);
+	ret = wiringPiSPISetup(0, 500000);
 	pinMode(MOSI, OUTPUT);          // MOSI
 	pinMode(MISO, INPUT);           // MISO
 	pinMode(SCLK, GPIO_CLOCK);      // SCLK
@@ -32,7 +32,8 @@ void writeSPI() {
  *
  */
 	digitalWrite(MOSI, REC_CTRL);
-	digitalWrite(MOSI, WRITE_REG);
+	digitalWrite(MOSI, WRITE_REG >> 2);
+	digitalWrite(MOSI, WRITE_REG & 0x00FF);
 	delay(43);		// Sampling time when using SR1 is 42.15 ms
 }
 
