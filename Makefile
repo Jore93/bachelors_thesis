@@ -1,5 +1,6 @@
 CC = gcc
 CP = cp
+ECHO = echo 
 MKDIR = mkdir
 MAKE = make
 MV = mv
@@ -22,8 +23,9 @@ BUILD = build
 .PHONY: all clean
 
 all:
-	echo Compiling program
+	$(ECHO) [Compiling program]
 	$(CC) $(OPTIONS) $(FLAGS) -I$(INCLUDE_DIRS) -L./$(WPI) $(C_SRCS) -o $(EXEC) $(LIBS)
 
 clean:
+	$(ECHO) [Removing executable]
 	$(RMRF) $(EXEC)
