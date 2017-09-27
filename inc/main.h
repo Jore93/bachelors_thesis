@@ -22,6 +22,7 @@ extern "C" {
 #include "reg_def.h"
 
 
+#define BAUD			9600
 #define MOSI 			19
 #define MISO 			21
 #define SCLK 			23

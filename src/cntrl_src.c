@@ -10,7 +10,8 @@
 
 bool openSPI() {
 	int ret;
-	ret = wiringPiSPISetup(0, 500000);
+	ret = wiringPiSPISetup(0, BAUD);
+	printf("%d\n", ret);
 	pinMode(MOSI, OUTPUT);          // MOSI
 	pinMode(MISO, INPUT);           // MISO
 	pinMode(SCLK, GPIO_CLOCK);      // SCLK
@@ -32,7 +33,8 @@ void writeSPI() {
  *
  */
 	digitalWrite(MOSI, REC_CTRL);
-	digitalWrite(MOSI, WRITE_REG >> 2);
+	digitalWrite(MOSI, 0);
+	digitalWrite(MOSI, WRITE_REG >> 8);
 	digitalWrite(MOSI, WRITE_REG & 0x00FF);
 	delay(43);		// Sampling time when using SR1 is 42.15 ms
 }
@@ -81,16 +83,19 @@ void readSPI(struct axes *data_ptr, int range, int i) {
 	struct axes value;
 
 	digitalWrite(MOSI, X_BUF);
+	digitalWrite(MOSI, 0);
 	digitalWrite(MOSI, i);
 	value.x = digitalRead(MISO);
 	data_ptr->x = acceleration(value.x);
 
 	digitalWrite(MOSI, Y_BUF);
+	digitalWrite(MOSI, 0);
 	digitalWrite(MOSI, i);
 	value.y = digitalRead(MISO);
 	data_ptr->y = acceleration(value.y);
 
 	digitalWrite(MOSI, Z_BUF);
+	digitalWrite(MOSI, 0);
 	digitalWrite(MOSI, i);
 	value.z = digitalRead(MISO);
 	data_ptr->z = acceleration(value.z);
