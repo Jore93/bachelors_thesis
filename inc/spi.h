@@ -31,7 +31,7 @@ struct axes {
 	uint16_t z;
 };
 
-static void pabort(const char *s);
+void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed);
 void writeSPI(int fd);
 void readSPI(struct axes *data_ptr, int range, int fd);
 void sendToAzure(struct axes *data_ptr);

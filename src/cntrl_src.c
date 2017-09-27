@@ -8,6 +8,46 @@
 #include "spi.h"
 #include "reg_def.h"
 
+static void pabort(const char *s) {
+	perror(s);
+	abort();
+}
+
+void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed) {
+	*fd = open(device, O_RDWR);
+	if (*fd < 0)
+		pabort("Can't open device");
+
+
+	int ret;
+	// SPI mode
+	ret = ioctl(*fd, SPI_IOC_WR_MODE, &mode);
+	if (ret == -1)
+		pabort("Can't set SPI mode");
+
+	ret = ioctl(*fd, SPI_IOC_RD_MODE, &mode);
+	if (ret == -1)
+		pabort("Can't get SPI mode");
+
+	// Bits per word
+	ret = ioctl(*fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
+	if (ret == -1)
+		pabort("Can't set bits per word");
+
+	ret = ioctl(*fd, SPI_IOC_RD_BITS_PER_WORD, &bits);
+	if (ret == -1)
+		pabort("Can't get bits per word");
+
+	// Max speed Hz
+	ret = ioctl(*fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
+	if (ret == -1)
+		pabort("Can't set max speed Hz");
+
+	ret = ioctl(*fd, SPI_IOC_RD_MAX_SPEED_HZ, &speed);
+	if (ret == -1)
+		pabort("Can't get max speed Hz");
+
+}
 
 void writeSPI(int fd) {
 /*
@@ -40,6 +80,11 @@ void writeSPI(int fd) {
 	};
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	if(ret < 1)
+		pabort("Cant send SPI message");
+	for(ret = 0; ret < ARRAY_SIZE(tx); ret++) {
+		printf("%.2X ", rx[ret]);
+	}
 }
 
 void readSPI(struct axes *data_ptr, int range, int fd) {
@@ -88,10 +133,7 @@ void readSPI(struct axes *data_ptr, int range, int fd) {
 	static uint8_t bits = 8;
 	static uint32_t speed = 500000;
 
-	uint8_t tx[] = {
-			X_BUF, 0x00,
-			0x00, 0x00
-	};
+	uint8_t tx[] = {X_BUF, 0x00, 0x00, 0x00};
 
 	uint8_t rx[ARRAY_SIZE(tx)] = {0, };
 
@@ -104,24 +146,22 @@ void readSPI(struct axes *data_ptr, int range, int fd) {
 	};
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	value.x = (rx[2] << 8) | rx[3];
+	data_ptr->x = acceleration(value.x);
+
+	tx[0] = Y_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
+	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	value.y = (rx[2] << 8) | rx[3];
+	data_ptr->y = acceleration(value.y);
+
+	tx[0] = Z_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
+	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	value.z = (rx[2] << 8) | rx[3];
+	data_ptr->z = acceleration(value.z);
+
 	for(ret = 0; ret < ARRAY_SIZE(tx); ret++) {
 		printf("%.2X ", rx[ret]);
 	}
-	/*
-	value.x = digitalRead(MISO);
-	data_ptr->x = acceleration(value.x);
-	tx[] = {
-		Y_BUF, 0x00,
-		0x00, 0x00
-	};
-	value.y = digitalRead(MISO);
-	data_ptr->y = acceleration(value.y);
-	tx[] = {
-		Z_BUF, 0x00,
-		0x00, 0x00
-	};
-	value.z = digitalRead(MISO);
-	data_ptr->z = acceleration(value.z);*/
 }
 
 void sendToAzure(struct axes *data_ptr) {
