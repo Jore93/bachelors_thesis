@@ -12,18 +12,7 @@ static void pabort(const char *s) {
 	perror(s);
 	abort();
 }
-/*
-void delay_ns(int ms) {
-	int ret;
-	struct timespec req;
-	req.tv_sec = 0;
-	req.tv_nsec = ms*1000000L;
 
-	ret = nanosleep(&req, (struct timespec *)NULL);
-	if(ret==-1)
-		pabort("Delay timing failed");
-}
-*/
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed) {
 	*fd = open(device, O_RDWR);
 	if (*fd < 0)
@@ -155,17 +144,17 @@ void readSPI(struct axes *data_ptr, int range, int fd) {
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	value.x = (rx[2] << 8) | rx[3];
-	data_ptr->x = acceleration(value.x);
+	data_ptr->x = value.x; //acceleration(value.x);
 
 	tx[0] = Y_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	value.y = (rx[2] << 8) | rx[3];
-	data_ptr->y = acceleration(value.y);
+	data_ptr->y = value.y; //acceleration(value.y);
 
 	tx[0] = Z_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	value.z = (rx[2] << 8) | rx[3];
-	data_ptr->z = acceleration(value.z);
+	data_ptr->z = value.z; //acceleration(value.z);
 
 	if(ret==-1)
 		pabort("Can't read SPI");
