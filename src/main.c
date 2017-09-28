@@ -26,7 +26,7 @@ int main() {
 		data_ptr = tmp;
 	}
 
-	while(/*i<100 &&*/ tmp != NULL) {
+	while(i<10 && tmp != NULL) {
 		writeSPI(fd, tx);
 		tx[0] = X_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
 		writeSPI(fd, tx);
