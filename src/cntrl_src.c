@@ -93,10 +93,6 @@ void writeSPI(int fd) {
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	if(ret < 1)
 		pabort("Cant send SPI message");
-	for(ret = 0; ret < ARRAY_SIZE(tx); ret++) {
-		printf("%.2X ", rx[ret]);
-	}
-//	delay_ns(0.015);
 }
 
 void readSPI(struct axes *data_ptr, int range, int fd) {
@@ -171,9 +167,8 @@ void readSPI(struct axes *data_ptr, int range, int fd) {
 	value.z = (rx[2] << 8) | rx[3];
 	data_ptr->z = acceleration(value.z);
 
-	for(ret = 0; ret < ARRAY_SIZE(tx); ret++) {
-		printf("%.2X ", rx[ret]);
-	}
+	if(ret==-1)
+		pabort("Can't read SPI");
 }
 
 void sendToAzure(struct axes *data_ptr) {

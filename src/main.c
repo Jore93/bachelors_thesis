@@ -25,14 +25,13 @@ int main() {
 		data_ptr = tmp;
 	}
 
-	while(i < 10) {//tmp != NULL) {
+	while(i<100){//tmp != NULL) {
 		writeSPI(fd);
 		readSPI(data_ptr, 4, fd);
 		sendToAzure(data_ptr);
 		i++;
 		memset(data_ptr, 0, sizeof(struct axes));
 	}
-	printf("Mode: %d\n", mode);
 
 	if(tmp != NULL) {
 		free(data_ptr);
