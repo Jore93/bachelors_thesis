@@ -23,7 +23,7 @@ BUILD = build
 
 all:
 	$(ECHO) [Compiling program]
-	$(CC) $(OPTIONS) $(FLAGS) -I$(INCLUDE_DIRS) $(C_SRCS) -o $(EXEC) $(LIBS)
+	$(CC) $(OPTIONS) $(OPTIMISE) -I$(INCLUDE_DIRS) $(C_SRCS) -o $(EXEC) $(LIBS)
 
 clean:
 	$(ECHO) [Removing executable]

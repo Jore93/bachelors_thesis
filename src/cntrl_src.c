@@ -12,14 +12,18 @@ static void pabort(const char *s) {
 	perror(s);
 	abort();
 }
-
+/*
 void delay_ns(int ms) {
-	struct timespec req = {0};
+	int ret;
+	struct timespec req;
 	req.tv_sec = 0;
 	req.tv_nsec = ms*1000000L;
-	nanosleep(&req, (struct timespec *)NULL);
-}
 
+	ret = nanosleep(&req, (struct timespec *)NULL);
+	if(ret==-1)
+		pabort("Delay timing failed");
+}
+*/
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed) {
 	*fd = open(device, O_RDWR);
 	if (*fd < 0)
@@ -67,7 +71,7 @@ void writeSPI(int fd) {
  */
 	int ret;
 	static uint8_t bits = 8;
-	static uint32_t speed = 500000;
+	static uint32_t speed = 1000000;
 	static uint16_t delay;
 
 	uint8_t tx[] = {
@@ -92,7 +96,7 @@ void writeSPI(int fd) {
 	for(ret = 0; ret < ARRAY_SIZE(tx); ret++) {
 		printf("%.2X ", rx[ret]);
 	}
-	delay_ns(15.4);
+//	delay_ns(0.015);
 }
 
 void readSPI(struct axes *data_ptr, int range, int fd) {
@@ -139,7 +143,7 @@ void readSPI(struct axes *data_ptr, int range, int fd) {
 	struct axes value;
 	int ret;
 	static uint8_t bits = 8;
-	static uint32_t speed = 500000;
+	static uint32_t speed = 1000000;
 
 	uint8_t tx[] = {X_BUF, 0x00, 0x00, 0x00};
 
