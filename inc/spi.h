@@ -38,7 +38,7 @@ void writeSPI(int fd, uint8_t *msg);
 uint16_t readSPI(int fd, uint8_t *msg);
 void sendToAzure(struct axes *data_ptr);
 uint16_t acceleration(uint16_t value, int range);
-
+void delay(int a);
 
 #ifdef __cplusplus
 }
