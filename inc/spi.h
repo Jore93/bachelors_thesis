@@ -12,10 +12,12 @@
 extern "C" {
 #endif
 
+#include <time.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <getopt.h>
 #include <fcntl.h>
@@ -31,6 +33,7 @@ struct axes {
 	uint16_t z;
 };
 
+void delay_ns(int ms);
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed);
 void writeSPI(int fd);
 void readSPI(struct axes *data_ptr, int range, int fd);

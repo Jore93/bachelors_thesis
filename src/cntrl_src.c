@@ -13,6 +13,13 @@ static void pabort(const char *s) {
 	abort();
 }
 
+void delay_ns(int ms) {
+	struct timespec req = {0};
+	req.tv_sec = 0;
+	req.tv_nsec = ms*1000000L;
+	nanosleep(&req, (struct timespec *)NULL);
+}
+
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed) {
 	*fd = open(device, O_RDWR);
 	if (*fd < 0)
@@ -61,7 +68,7 @@ void writeSPI(int fd) {
 	int ret;
 	static uint8_t bits = 8;
 	static uint32_t speed = 500000;
-	static uint16_t delay = 42150;
+	static uint16_t delay;
 
 	uint8_t tx[] = {
 			REC_CTRL, 0x00,
@@ -85,6 +92,7 @@ void writeSPI(int fd) {
 	for(ret = 0; ret < ARRAY_SIZE(tx); ret++) {
 		printf("%.2X ", rx[ret]);
 	}
+	delay_ns(15.4);
 }
 
 void readSPI(struct axes *data_ptr, int range, int fd) {
