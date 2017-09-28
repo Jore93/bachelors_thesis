@@ -26,10 +26,14 @@ int main() {
 		data_ptr = tmp;
 	}
 
-	while(i<100 && tmp != NULL) {
+	while(/*i<100 &&*/ tmp != NULL) {
 		writeSPI(fd, tx);
-		tx[0] = PROD_ID; tx[0] = 0x00; tx[0] = 0x00; tx[0] = 0x00;
+		tx[0] = X_BUF; tx[1] = 0x00; tx[2] = X_BUF; tx[3] = 0x00;
 		data_ptr->x = readSPI(fd, tx);
+		tx[0] = Y_BUF; tx[1] = 0x00; tx[2] = Y_BUF; tx[3] = 0x00;
+		data_ptr->y = readSPI(fd, tx);
+		tx[0] = Z_BUF; tx[1] = 0x00; tx[2] = Z_BUF; tx[3] = 0x00;
+		data_ptr->z = readSPI(fd, tx);
 		sendToAzure(data_ptr);
 		i++;
 		memset(data_ptr, 0, sizeof(struct axes));
