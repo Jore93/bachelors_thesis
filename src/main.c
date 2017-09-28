@@ -28,11 +28,14 @@ int main() {
 
 	while(/*i<100 &&*/ tmp != NULL) {
 		writeSPI(fd, tx);
-		tx[0] = X_BUF; tx[1] = 0x00; tx[2] = X_BUF; tx[3] = 0x00;
+		tx[0] = X_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
+		writeSPI(fd, tx);
 		data_ptr->x = readSPI(fd, tx);
-		tx[0] = Y_BUF; tx[1] = 0x00; tx[2] = Y_BUF; tx[3] = 0x00;
+		tx[0] = Y_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
+		writeSPI(fd, tx);
 		data_ptr->y = readSPI(fd, tx);
-		tx[0] = Z_BUF; tx[1] = 0x00; tx[2] = Z_BUF; tx[3] = 0x00;
+		tx[0] = Z_BUF; tx[1] = 0x00; tx[2] = 0x00; tx[3] = 0x00;
+		writeSPI(fd, tx);
 		data_ptr->z = readSPI(fd, tx);
 		sendToAzure(data_ptr);
 		i++;
