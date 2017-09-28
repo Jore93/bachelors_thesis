@@ -74,7 +74,6 @@ void writeSPI(int fd, uint8_t *tx) {
 	};
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
-	delay(20);
 	if(ret < 1)
 		pabort("Cant send SPI message");
 }
@@ -152,7 +151,3 @@ uint16_t acceleration(uint16_t value, int range) {
 	return data;
 }
 
-void delay(int a) {
-	//Delay function in loops
-	for(int i = 0;i<a;i++){}
-}

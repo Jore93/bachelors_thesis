@@ -25,26 +25,16 @@ int main() {
 	if(tmp != NULL) {
 		data_ptr = tmp;
 	}
-	writeSPI(fd, tx);
+
 	while(i<10 && tmp != NULL) {
-		tx[0] = 0x02; tx[1] = 0x32;
 		writeSPI(fd, tx);
 		tx[0] = X_BUF; tx[1] = 0x00;
-		writeSPI(fd, tx);
-		tx[0] = REC_CTRL; tx[1] = 0x00;
 		data_ptr->x = readSPI(fd, tx);
-		tx[0] = 0x02; tx[1] = 0x32;
-		writeSPI(fd, tx);
 		tx[0] = Y_BUF; tx[1] = 0x00;
-		writeSPI(fd, tx);
-		tx[0] = REC_CTRL; tx[1] = 0x00;
 		data_ptr->y = readSPI(fd, tx);
-		tx[0] = 0x02; tx[1] = 0x32;
-		writeSPI(fd, tx);
-		tx[0] = Z_BUF; tx[1] = 0x00;
-		writeSPI(fd, tx);
-		tx[0] = REC_CTRL; tx[1] = 0x00;
+		tx[0] = Z_BUF;; tx[1] = 0x00;
 		data_ptr->z = readSPI(fd, tx);
+		tx[0] = REC_CTRL; tx[1] = 0x00;
 		sendToAzure(data_ptr);
 		i++;
 		memset(data_ptr, 0, sizeof(struct axes));
