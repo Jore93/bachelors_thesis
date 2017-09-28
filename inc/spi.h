@@ -33,11 +33,12 @@ struct axes {
 	uint16_t z;
 };
 
-void delay_ns(int ms);
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed);
-void writeSPI(int fd);
-void readSPI(struct axes *data_ptr, int range, int fd);
+void writeSPI(int fd, uint8_t *msg);
+uint16_t readSPI(int fd, uint8_t *msg);
 void sendToAzure(struct axes *data_ptr);
+uint16_t acceleration(uint16_t value, int range);
+
 
 #ifdef __cplusplus
 }

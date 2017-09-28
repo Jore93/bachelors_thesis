@@ -6,14 +6,15 @@
  */
 
 #include "spi.h"
-
+#include "reg_def.h"
 
 
 int main() {
 	int i, fd;
 	struct axes *data_ptr, *tmp;
+	uint8_t tx[] = {REC_CTRL, 0x00, 0x02, 0x32};
 	static const char *device = "/dev/spidev0.0";
-	static uint8_t mode = 3;
+	static uint8_t mode = SPI_MODE_3;
 	static uint8_t bits = 8;
 	static uint32_t speed = 1000000;	// 1 MHz
 
@@ -26,8 +27,9 @@ int main() {
 	}
 
 	while(i<100 && tmp != NULL) {
-		writeSPI(fd);
-		readSPI(data_ptr, 4, fd);
+		writeSPI(fd, tx);
+		tx[0] = PROD_ID; tx[0] = 0x00; tx[0] = 0x00; tx[0] = 0x00;
+		data_ptr->x = readSPI(fd, tx);
 		sendToAzure(data_ptr);
 		i++;
 		memset(data_ptr, 0, sizeof(struct axes));
