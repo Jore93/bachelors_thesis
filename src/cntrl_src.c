@@ -95,7 +95,7 @@ uint16_t readSPI(int fd, uint8_t *tx) {
 	};
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
-	value = (rx[2] << 8) | rx[3];
+	value = (rx[0] << 8) | rx[1];
 
 	for(ret=0;ret<ARRAY_SIZE(tx);ret++) {
 		printf("%.2X ", rx[ret]);
