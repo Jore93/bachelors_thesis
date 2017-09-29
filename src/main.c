@@ -28,11 +28,7 @@ int main() {
 
 	writeSPI(fd, tx);
 	delay(0.020);
-	writeSPI(fd, tx);
-	delay(0.020);
 	tx[2] = 0x02; tx[3] = 0x32;
-	writeSPI(fd, tx);
-	delay(0.020);
 	writeSPI(fd, tx);
 	delay(43);
 
@@ -61,11 +57,7 @@ int main() {
 		tx[2] = REC_CTRL;
 		writeSPI(fd, tx);
 		delay(0.020);
-		writeSPI(fd, tx);
-		delay(0.020);
 		tx[2] = 0x02; tx[3] = 0x32;
-		writeSPI(fd, tx);
-		delay(0.020);
 		writeSPI(fd, tx);
 		delay(43);
 
