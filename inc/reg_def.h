@@ -27,7 +27,7 @@ enum user_regs
 	X_BUF				= 0x14,
 	Y_BUF				= 0x16,
 	Z_BUF				= 0x18,
-	REC_CNT				= 0x1A,
+	REC_CNTR			= 0x1A,
 	REC_CTRL			= 0x1C,
 	REC_PRD				= 0x1E,
 
@@ -45,8 +45,8 @@ enum user_regs
 	DIO_CTRL			= 0x36,
 	GPIO_CTRL			= 0x38,
 	dummy0				= 0x3A, // 2 bytes
-	STATUS	 			= 0x3C,
-	COMMAND				= 0x3E,
+	DIAG_STAT 			= 0x3C,
+	GLOB_CMD			= 0x3E,
 
 	ALM_X_STAT			= 0x40,
 	ALM_Y_STAT			= 0x42,

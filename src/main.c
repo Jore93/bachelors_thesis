@@ -25,7 +25,15 @@ int main() {
 	if(tmp != NULL) {
 		data_ptr = tmp;
 	}
-//	writeSPI(fd, SW_RST);
+
+	// Software reset
+	tx[2] = GLOB_CMD;
+	writeSPI(fd, tx);
+	delay(0.020);
+	tx[3] = 0x40;
+	writeSPI(fd, tx);
+	delay(55);
+	tx[3] = 0x00;
 
 	while(i<50 && tmp != NULL) {
 		tx[2] = REC_CTRL;
@@ -35,11 +43,11 @@ int main() {
 		writeSPI(fd, tx);
 		delay(0.020);
 
-		tx[2] = COMMAND; tx[3] = 0x00;
+		tx[2] = GLOB_CMD; tx[3] = 0x00;
 		writeSPI(fd, tx);
 		delay(0.020);
 		tx[2] = 0x08;
-		data_ptr->x = readSPI(fd, tx);
+		writeSPI(fd, tx);
 		delay(50);
 
 		tx[2] = X_BUF;
