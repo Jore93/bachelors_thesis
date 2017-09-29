@@ -10,7 +10,7 @@
 
 
 int main() {
-	int i, fd;
+	int i, fd, wait;
 	uint8_t tx[4] = {0};
 	struct axes *data_ptr, *tmp;
 	static const char *device = "/dev/spidev0.0";
@@ -36,6 +36,7 @@ int main() {
 	tx[3] = 0x00;
 
 	while(i<50 && tmp != NULL) {
+		// Tell what to record
 		tx[2] = REC_CTRL;
 		writeSPI(fd, tx);
 		delay(0.020);
@@ -43,6 +44,7 @@ int main() {
 		writeSPI(fd, tx);
 		delay(0.020);
 
+		// Start recording
 		tx[2] = GLOB_CMD; tx[3] = 0x00;
 		writeSPI(fd, tx);
 		delay(0.020);
@@ -50,6 +52,14 @@ int main() {
 		writeSPI(fd, tx);
 		delay(50);
 
+		tx[2] = DIAG_STAT;
+		writeSPI(fd, tx);
+		delay(0.020);
+		wait = 1;
+		while(wait == 0) {
+			wait = readSPI(fd, tx) & 0x0080;
+		}
+		// Read values from buffers
 		tx[2] = X_BUF;
 		writeSPI(fd, tx);
 		delay(0.020);
