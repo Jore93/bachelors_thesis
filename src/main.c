@@ -37,11 +37,21 @@ int main() {
 		tx[2] = REC_CTRL & 0x81; tx[3] = 0x02;
 		writeSPI(fd, tx);
 		delay(0.020);
+		tx[2] = REC_CTRL & 0x81; tx[3] = 0x02;
+		writeSPI(fd, tx);
+		delay(0.020);
+
+		tx[2] = REC_CTRL & 0x80; tx[3] = 0x32;
+		writeSPI(fd, tx);
+		delay(0.020);
 		tx[2] = REC_CTRL & 0x80; tx[3] = 0x32;
 		writeSPI(fd, tx);
 		delay(0.020);
 
 		// Start recording
+		tx[2] = GLOB_CMD & 0x81; tx[3] = 0x08;
+		writeSPI(fd, tx);
+		delay(50);
 		tx[2] = GLOB_CMD & 0x81; tx[3] = 0x08;
 		writeSPI(fd, tx);
 		delay(50);
