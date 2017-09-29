@@ -25,12 +25,18 @@ int main() {
 	if(tmp != NULL) {
 		data_ptr = tmp;
 	}
+
 	writeSPI(fd, tx);
+	delay(0.020);
+	writeSPI(fd, tx);
+	delay(0.020);
+	tx[2] = 0x02; tx[3] = 0x32;
+	writeSPI(fd, tx);
+	delay(0.020);
+	writeSPI(fd, tx);
+	delay(43);
+
 	while(i<5 && tmp != NULL) {
-		delay(0.020);
-		tx[2] = 0x02; tx[3] = 0x32;
-		writeSPI(fd, tx);
-		delay(43);
 
 		tx[2] = X_BUF; tx[3] = 0x00;
 		writeSPI(fd, tx);
@@ -54,6 +60,14 @@ int main() {
 
 		tx[2] = REC_CTRL;
 		writeSPI(fd, tx);
+		delay(0.020);
+		writeSPI(fd, tx);
+		delay(0.020);
+		tx[2] = 0x02; tx[3] = 0x32;
+		writeSPI(fd, tx);
+		delay(0.020);
+		writeSPI(fd, tx);
+		delay(43);
 
 		sendToAzure(data_ptr);
 		i++;
