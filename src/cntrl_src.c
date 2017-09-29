@@ -83,6 +83,7 @@ uint16_t readSPI(int fd, uint8_t *tx) {
 	int ret;
 	static uint8_t bits = 8;
 	static uint32_t speed = 1000000;
+	static uint16_t delay_u;
 
 	uint8_t rx[ARRAY_SIZE(tx)] = {0, };
 
@@ -90,14 +91,19 @@ uint16_t readSPI(int fd, uint8_t *tx) {
 		.tx_buf = (unsigned long)tx,
 		.rx_buf = (unsigned long)rx,
 		.len = ARRAY_SIZE(tx),
+		.delay_usecs = delay_u,
 		.speed_hz = speed,
 		.bits_per_word = bits,
 	};
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	value = (rx[0] << 8) | rx[1];
-
-	for(ret=0;ret<2;ret++) {
+	printf("Inside: %d\n", ARRAY_SIZE(tx));
+	for(ret=0;ret<6;ret++){
+		printf("%.2X ", tx[ret]);
+	}
+	printf("\n");
+	for(ret=0;ret<ARRAY_SIZE(tx)+2;ret++) {
 		printf("%.2X ", rx[ret]);
 	}
 	printf("\n");
