@@ -10,7 +10,7 @@
 
 
 int main() {
-	int i, fd, wait;
+	int i, fd;
 	uint8_t tx[4] = {0};
 	struct axes *data_ptr, *tmp;
 	static const char *device = "/dev/spidev0.0";
@@ -37,14 +37,12 @@ int main() {
 		tx[2] = REC_CTRL & 0x81; tx[3] = 0x02;
 		writeSPI(fd, tx);
 		delay(0.020);
-		tx[2] = REC_CTRL & 0x81; tx[3] = 0x02;
 		writeSPI(fd, tx);
 		delay(0.020);
 
 		tx[2] = REC_CTRL & 0x80; tx[3] = 0x32;
 		writeSPI(fd, tx);
 		delay(0.020);
-		tx[2] = REC_CTRL & 0x80; tx[3] = 0x32;
 		writeSPI(fd, tx);
 		delay(0.020);
 
