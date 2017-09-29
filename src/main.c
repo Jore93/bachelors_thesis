@@ -11,6 +11,7 @@
 
 int main() {
 	int i, fd;
+	uint8_t tx[4] = {0};
 	struct axes *data_ptr, *tmp;
 	static const char *device = "/dev/spidev0.0";
 	static uint8_t mode = SPI_MODE_3;
@@ -24,21 +25,24 @@ int main() {
 	if(tmp != NULL) {
 		data_ptr = tmp;
 	}
+//	writeSPI(fd, SW_RST);
 
-	uint8_t tx[] = {0x00, 0x00, PROD_ID, 0x00};
-
-	while(i<5 && tmp != NULL) {
-/*		writeSPI(fd, tx);
-		delay(0.020);
+	while(i<50 && tmp != NULL) {
+		tx[2] = REC_CTRL;
 		writeSPI(fd, tx);
 		delay(0.020);
 		tx[2] = 0x02; tx[3] = 0x32;
 		writeSPI(fd, tx);
 		delay(0.020);
+
+		tx[2] = COMMAND; tx[3] = 0x00;
 		writeSPI(fd, tx);
-		delay(43);
-*/
-		tx[2] = X_BUF; tx[3] = 0x00;
+		delay(0.020);
+		tx[2] = 0x08;
+		data_ptr->x = readSPI(fd, tx);
+		delay(50);
+
+		tx[2] = X_BUF;
 		writeSPI(fd, tx);
 		delay(0.020);
 		data_ptr->x = readSPI(fd, tx);
@@ -55,7 +59,6 @@ int main() {
 		delay(0.020);
 		data_ptr->z = readSPI(fd, tx);
 		delay(0.020);
-
 
 		sendToAzure(data_ptr);
 		i++;
