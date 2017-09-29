@@ -28,9 +28,9 @@ extern "C" {
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
 struct axes {
-	uint16_t x[256];
-	uint16_t y[256];
-	uint16_t z[256];
+	uint16_t x;
+	uint16_t y;
+	uint16_t z;
 };
 
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed);

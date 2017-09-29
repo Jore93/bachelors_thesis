@@ -35,7 +35,7 @@ int main() {
 	delay(55);
 	tx[3] = 0x00;
 
-	while(i<1 && tmp != NULL) {
+	while(i<50 && tmp != NULL) {
 		// Tell what to record
 		tx[2] = REC_CTRL;
 		writeSPI(fd, tx);
@@ -52,37 +52,35 @@ int main() {
 		writeSPI(fd, tx);
 		delay(50);
 
-		tx[2] = DIAG_STAT;
-		writeSPI(fd, tx);
-		delay(0.020);
-		wait = 1;
-		while(wait == 0) {
-			wait = readSPI(fd, tx) & 0x0080;
-		}
 		// Read values from buffers
 		tx[2] = X_BUF;
 		writeSPI(fd, tx);
 		delay(0.020);
-		for(wait=0;wait<256;wait++) {
-			data_ptr->x[wait] = readSPI(fd, tx);
-			delay(0.020);
-		}
-
-		tx[2] = Y_BUF;
+		tx[2] = 0x00;
 		writeSPI(fd, tx);
 		delay(0.020);
-		for(wait=0;wait<256;wait++) {
-			data_ptr->y[wait] = readSPI(fd, tx);
-			delay(0.020);
-		}
+		data_ptr->x = readSPI(fd, tx);
+		delay(0.020);
+
+		tx[2] = PROD_ID;
+		writeSPI(fd, tx);
+		delay(0.020);
+		tx[2] = 0x00;
+		writeSPI(fd, tx);
+		delay(0.020);
+		data_ptr->y = readSPI(fd, tx);
+		delay(0.020);
+
 		tx[2] = Z_BUF;
 		writeSPI(fd, tx);
 		delay(0.020);
-		for(wait=0;wait<256;wait++) {
-			data_ptr->z[wait] = readSPI(fd, tx);
-			delay(0.020);
-		}
-//		sendToAzure(data_ptr);
+		tx[2] = 0x00;
+		writeSPI(fd, tx);
+		delay(0.020);
+		data_ptr->z = readSPI(fd, tx);
+		delay(0.020);
+
+		sendToAzure(data_ptr);
 		i++;
 		memset(data_ptr, 0, sizeof(struct axes));
 	}
