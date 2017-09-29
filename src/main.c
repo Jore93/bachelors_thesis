@@ -27,28 +27,22 @@ int main() {
 	}
 
 	// Software reset
-	tx[2] = GLOB_CMD;
-	writeSPI(fd, tx);
-	delay(0.020);
-	tx[3] = 0x40;
+	tx[2] = GLOB_CMD & 0x80; tx[3] = 0x40;
 	writeSPI(fd, tx);
 	delay(55);
 	tx[3] = 0x00;
 
 	while(i<50 && tmp != NULL) {
 		// Tell what to record
-		tx[2] = REC_CTRL;
+		tx[2] = REC_CTRL & 0x81; tx[3] = 0x02;
 		writeSPI(fd, tx);
 		delay(0.020);
-		tx[2] = 0x02; tx[3] = 0x32;
+		tx[2] = REC_CTRL & 0x80; tx[3] = 0x32;
 		writeSPI(fd, tx);
 		delay(0.020);
 
 		// Start recording
-		tx[2] = GLOB_CMD; tx[3] = 0x00;
-		writeSPI(fd, tx);
-		delay(0.020);
-		tx[2] = 0x08;
+		tx[2] = GLOB_CMD & 0x81; tx[3] = 0x08;
 		writeSPI(fd, tx);
 		delay(50);
 
@@ -62,7 +56,7 @@ int main() {
 		data_ptr->x = readSPI(fd, tx);
 		delay(0.020);
 
-		tx[2] = PROD_ID;
+		tx[2] = Y_BUF;
 		writeSPI(fd, tx);
 		delay(0.020);
 		tx[2] = 0x00;
