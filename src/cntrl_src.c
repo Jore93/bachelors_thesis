@@ -98,12 +98,8 @@ uint16_t readSPI(int fd, uint8_t *tx) {
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	value = (rx[0] << 8) | rx[1];
-	printf("Inside: %d\n", ARRAY_SIZE(tx));
-	for(ret=0;ret<6;ret++){
-		printf("%.2X ", tx[ret]);
-	}
-	printf("\n");
-	for(ret=0;ret<ARRAY_SIZE(tx)+2;ret++) {
+
+	for(ret=0;ret<ARRAY_SIZE(tx);ret++) {
 		printf("%.2X ", rx[ret]);
 	}
 	printf("\n");
