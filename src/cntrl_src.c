@@ -246,27 +246,30 @@ void readBuffers(int fd, struct axes *data_ptr) {
 	writeSPI(fd, tx);
 	delay(0.020);
 	for(i=0, value = 0; i<SAMPLES;i++) {
-		value += (readSPI(fd, tx)/SAMPLES);
+		value += readSPI(fd, tx);
 		delay(0.020);
 	}
+	value = value >> 8;
 	data_ptr->x = acceleration(value, 4);
 
 	tx[2] = Y_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
 	for(i=0, value = 0; i<SAMPLES;i++) {
-		value += (readSPI(fd, tx)/SAMPLES);
+		value += readSPI(fd, tx);
 		delay(0.020);
 	}
+	value = value >> 8;
 	data_ptr->y = acceleration(value, 4);
 
 	tx[2] = Z_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
 	for(i=0, value = 0; i<SAMPLES;i++) {
-		value += (readSPI(fd, tx)/SAMPLES);
+		value += readSPI(fd, tx);
 		delay(0.020);
 	}
+	value = value >> 8;
 	data_ptr->z = acceleration(value, 4);
 }
 
