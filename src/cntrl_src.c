@@ -241,28 +241,36 @@ void startRecording(int fd) {
 
 void readBuffers(int fd, struct axes *data_ptr) {
 	uint8_t tx[4] = {0};
-	uint8_t value;
+	uint8_t value, i;
 	tx[2] = X_BUF; tx[3] = 0x00;
 	writeSPI(fd, tx);
 	delay(0.020);
-	value= readSPI(fd, tx);
+	for(i=0, value = 0; i<256;i++) {
+		value += readSPI(fd, tx);
+		delay(0.020);
+	}
+	value = value/256;
 	data_ptr->x = acceleration(value, 4);
-	delay(0.020);
 
 	tx[2] = Y_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
-	value= readSPI(fd, tx);
+	for(i=0, value = 0; i<256;i++) {
+		value += readSPI(fd, tx);
+		delay(0.020);
+	}
+	value = value/256;
 	data_ptr->y = acceleration(value, 4);
-	delay(0.020);
-
 
 	tx[2] = Z_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
-	value= readSPI(fd, tx);
+	for(i=0, value = 0; i<256;i++) {
+		value += readSPI(fd, tx);
+		delay(0.020);
+	}
+	value = value/256;
 	data_ptr->z = acceleration(value, 4);
-	delay(0.020);
 }
 
 
