@@ -52,19 +52,19 @@ int main() {
 		delay(50);
 
 		// Read values from buffers
-		tx[2] = X_BUF | 0x70; tx[3] = 0x00;
+		tx[2] = X_BUF; tx[3] = 0x00;
 		writeSPI(fd, tx);
 		delay(0.020);
 		data_ptr->x = readSPI(fd, tx);
 		delay(0.020);
 
-		tx[2] = Y_BUF | 0x70;
+		tx[2] = Y_BUF;
 		writeSPI(fd, tx);
 		delay(0.020);
 		data_ptr->y = readSPI(fd, tx);
 		delay(0.020);
 
-		tx[2] = Z_BUF | 0x70;
+		tx[2] = Z_BUF;
 		writeSPI(fd, tx);
 		delay(0.020);
 		data_ptr->z = readSPI(fd, tx);
