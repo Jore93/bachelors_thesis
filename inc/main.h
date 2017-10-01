@@ -22,8 +22,16 @@ extern "C" {
 #include "reg_def.h"
 
 
+#define BAUD			9600
+#define MOSI 			19
+#define MISO 			21
+#define SCLK 			23
+#define CE0				24
+
 #define WRITE_REG		0x0232
 #define READ_REG		0x0000		// Index of value you want to read
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
 struct axes {
 	uint16_t x;

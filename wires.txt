@@ -1,0 +1,6 @@
+Gray:	GND, pin 20
+Blue:	SCLK, pin 23
+Black:	CE0, pin 24
+Green:	MISO, pin 21
+White:	MOSI, pin 19
+Purple:	VDD, pin 17
