@@ -28,14 +28,14 @@ extern "C" {
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
 struct axes {
-	uint16_t x;
-	uint16_t y;
-	uint16_t z;
+	int16_t x;
+	int16_t y;
+	int16_t z;
 };
 
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed);
 void writeSPI(int fd, uint8_t *msg);
-uint16_t readSPI(int fd, uint8_t *msg);
+int16_t readSPI(int fd, uint8_t *msg);
 void sendToAzure(struct axes *data_ptr);
 uint16_t acceleration(uint16_t value, int range);
 void delay (unsigned int howLong);

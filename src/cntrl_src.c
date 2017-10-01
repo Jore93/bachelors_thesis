@@ -78,8 +78,8 @@ void writeSPI(int fd, uint8_t *tx) {
 		pabort("Cant send SPI message");
 }
 
-uint16_t readSPI(int fd, uint8_t *tx) {
-	uint16_t value;
+int16_t readSPI(int fd, uint8_t *tx) {
+	int16_t value;
 	int ret;
 	static uint8_t bits = 8;
 	static uint32_t speed = 1000000;
