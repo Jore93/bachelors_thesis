@@ -47,6 +47,13 @@ void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t s
 	if (ret == -1)
 		pabort("Can't get max speed Hz");
 
+	// Restore factory register settings and clear the capture buffers
+	tx[2] = GLOB_CMD | 0x81; tx[3] = 0x00;
+	writeSPI(*fd, tx);
+	delay(0.020);
+	tx[2] = GLOB_CMD | 0x80; tx[3] = 0x08;
+	writeSPI(*fd, tx);
+	delay(81);
 	// Software reset
 	tx[2] = GLOB_CMD | 0x81; tx[3] = 0x00;
 	writeSPI(*fd, tx);
@@ -126,7 +133,7 @@ uint16_t readSPI(int fd, uint8_t *tx) {
 
 void sendToAzure(struct axes *data_ptr) {
 	// Send data from data_ptr to Azure
-	printf("x axis: %d\ny axis: %d\nz axis: %d\n\n", data_ptr->x, data_ptr->y, data_ptr->z);
+	printf("x axis: %d mg\ny axis: %d mg\nz axis: %d mg\n\n", data_ptr->x, data_ptr->y, data_ptr->z);
 }
 
 int16_t acceleration(uint16_t value, int range) {
@@ -239,14 +246,14 @@ void readBuffers(int fd, struct axes *data_ptr) {
 	writeSPI(fd, tx);
 	delay(0.020);
 	value= readSPI(fd, tx);
-	data_ptr->x = acceleration(fd, value);
+	data_ptr->x = acceleration(value, 4);
 	delay(0.020);
 
 	tx[2] = Y_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
 	value= readSPI(fd, tx);
-	data_ptr->y = acceleration(fd, value);
+	data_ptr->y = acceleration(value, 4);
 	delay(0.020);
 
 
@@ -254,7 +261,7 @@ void readBuffers(int fd, struct axes *data_ptr) {
 	writeSPI(fd, tx);
 	delay(0.020);
 	value= readSPI(fd, tx);
-	data_ptr->z = acceleration(fd, value);
+	data_ptr->z = acceleration(value, 4);
 	delay(0.020);
 }
 
