@@ -25,6 +25,8 @@ extern "C" {
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 
+#include "reg_def.h"
+
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
 struct axes {
@@ -38,6 +40,9 @@ void writeSPI(int fd, uint8_t *msg);
 int16_t readSPI(int fd, uint8_t *msg);
 void sendToAzure(struct axes *data_ptr);
 uint16_t acceleration(uint16_t value, int range);
+void recordingSettings(int fd);
+void startRecording(int fd);
+void readBuffers(int fd, struct axes *data_ptr);
 void delay (unsigned int howLong);
 
 

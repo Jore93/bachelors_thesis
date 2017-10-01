@@ -13,12 +13,13 @@ static void pabort(const char *s) {
 }
 
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed) {
+	int ret;
+	uint8_t tx[4] = {0};
+
 	*fd = open(device, O_RDWR);
 	if (*fd < 0)
 		pabort("Can't open device");
 
-
-	int ret;
 	// SPI mode
 	ret = ioctl(*fd, SPI_IOC_WR_MODE, &mode);
 	if (ret == -1)
@@ -46,6 +47,20 @@ void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t s
 	if (ret == -1)
 		pabort("Can't get max speed Hz");
 
+	// Software reset
+	tx[2] = GLOB_CMD | 0x81; tx[3] = 0x00;
+	writeSPI(*fd, tx);
+	delay(0.020);
+	tx[2] = GLOB_CMD | 0x80; tx[3] = 0x40;
+	writeSPI(*fd, tx);
+	delay(55);
+	// Offset correction
+	tx[2] = GLOB_CMD | 0x81; tx[3] = 0x00;
+	writeSPI(*fd, tx);
+	delay(0.020);
+	tx[2] = GLOB_CMD | 0x80; tx[3] = 0x01;
+	writeSPI(*fd, tx);
+	delay(681);
 }
 
 void writeSPI(int fd, uint8_t *tx) {
@@ -152,6 +167,48 @@ uint16_t acceleration(uint16_t value, int range) {
 	}
 	return data;
 }
+
+void recordingSettings(int fd) {
+	uint8_t tx[4] = {0};
+	tx[2] = REC_CTRL | 0x81; tx[3] = 0x02;
+	writeSPI(fd, tx);
+	delay(0.020);
+	tx[2] = REC_CTRL | 0x80; tx[3] = 0x32;
+	writeSPI(fd, tx);
+	delay(0.020);
+}
+
+void startRecording(int fd) {
+	uint8_t tx[4] = {0};
+	tx[2] = GLOB_CMD | 0x80; tx[3] = 0x00;
+	writeSPI(fd, tx);
+	delay(0.020);
+	tx[2] = GLOB_CMD | 0x81; tx[3] = 0x08;
+	writeSPI(fd, tx);
+	delay(42.15);
+}
+
+void readBuffers(int fd, struct axes *data_ptr) {
+	uint8_t tx[4] = {0};
+	tx[2] = X_BUF; tx[3] = 0x00;
+	writeSPI(fd, tx);
+	delay(0.020);
+	data_ptr->x = readSPI(fd, tx);
+	delay(0.020);
+
+	tx[2] = Y_BUF;
+	writeSPI(fd, tx);
+	delay(0.020);
+	data_ptr->y = readSPI(fd, tx);
+	delay(0.020);
+
+	tx[2] = Z_BUF;
+	writeSPI(fd, tx);
+	delay(0.020);
+	data_ptr->z = readSPI(fd, tx);
+	delay(0.020);
+}
+
 
 void delay (unsigned int howLong) {
   struct timespec sleeper, dummy ;
