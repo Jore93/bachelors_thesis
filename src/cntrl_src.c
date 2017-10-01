@@ -93,8 +93,8 @@ void writeSPI(int fd, uint8_t *tx) {
 		pabort("Cant send SPI message");
 }
 
-int16_t readSPI(int fd, uint8_t *tx) {
-	int16_t value;
+uint16_t readSPI(int fd, uint8_t *tx) {
+	uint16_t value;
 	int ret;
 	static uint8_t bits = 8;
 	static uint32_t speed = 1000000;
@@ -129,7 +129,7 @@ void sendToAzure(struct axes *data_ptr) {
 	printf("x axis: %d\ny axis: %d\nz axis: %d\n\n", data_ptr->x, data_ptr->y, data_ptr->z);
 }
 
-uint16_t acceleration(uint16_t value, int range) {
+int16_t acceleration(uint16_t value, int range) {
 	/* These calculations are for 0g to 70g range, change the value of n depending on what range you are using.
 	 *
 	 * Range:
@@ -139,7 +139,7 @@ uint16_t acceleration(uint16_t value, int range) {
 	 * 4: 0g to 70g
 	 */
 
-	uint16_t data, n;
+	int16_t data, n;
 	if(range == 1) {
 		n = 0.0305;
 	}
@@ -156,14 +156,58 @@ uint16_t acceleration(uint16_t value, int range) {
 		n = 0;
 	}
 
-	if(value < 0x8000) {
-		data = value * n;
-	}
-	else if(value > 0x7FFF) {
-		data = -(0xFFFF - value -1) * n;
-	}
-	else {
-		data = 0;
+	switch(range) {
+		case 1: {
+			if(value < 0x8013) {
+				data = value * n;
+			}
+			else if(value > 0x8012 && value <= 0xFFFF) {
+				data = -(0xFFFF - value + 1) * n;
+			}
+			else {
+				data = 0;
+			}
+			break;
+		}
+		case 2: {
+			if(value < 0x8000) {
+				data = value * n;
+			}
+			else if(value > 0x7FFF) {
+				data = -(0xFFFF - value + 1) * n;
+			}
+			else {
+				data = 0;
+			}
+			break;
+		}
+		case 3: {
+			if(value < 0x8000) {
+				data = value * n;
+			}
+			else if(value > 0x7FFF) {
+				data = -(0xFFFF - value + 1) * n;
+			}
+			else {
+				data = 0;
+			}
+			break;
+		}
+		case 4: {
+			if(value < 0x72B0) {
+				data = value * n;
+			}
+			else if(value > 0x8D4F && value <= 0xFFFF) {
+				data = -(0xFFFF - value + 1) * n;
+			}
+			else {
+				data = 0;
+			}
+			break;
+		}
+		default: {
+			pabort("Incorrect range");
+		}
 	}
 	return data;
 }
@@ -190,22 +234,27 @@ void startRecording(int fd) {
 
 void readBuffers(int fd, struct axes *data_ptr) {
 	uint8_t tx[4] = {0};
+	uint8_t value;
 	tx[2] = X_BUF; tx[3] = 0x00;
 	writeSPI(fd, tx);
 	delay(0.020);
-	data_ptr->x = readSPI(fd, tx);
+	value= readSPI(fd, tx);
+	data_ptr->x = acceleration(fd, value);
 	delay(0.020);
 
 	tx[2] = Y_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
-	data_ptr->y = readSPI(fd, tx);
+	value= readSPI(fd, tx);
+	data_ptr->y = acceleration(fd, value);
 	delay(0.020);
+
 
 	tx[2] = Z_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
-	data_ptr->z = readSPI(fd, tx);
+	value= readSPI(fd, tx);
+	data_ptr->z = acceleration(fd, value);
 	delay(0.020);
 }
 
