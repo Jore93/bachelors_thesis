@@ -34,7 +34,7 @@ int main() {
 	writeSPI(fd, tx);
 	delay(55);
 
-	while(i<50 && tmp != NULL) {
+	while(i<5 && tmp != NULL) {
 		// Tell what to record
 		tx[2] = REC_CTRL | 0x81; tx[3] = 0x02;
 		writeSPI(fd, tx);
@@ -70,6 +70,9 @@ int main() {
 		data_ptr->z = readSPI(fd, tx);
 		delay(0.020);
 
+//		data_ptr->x = acceleration(data_ptr->x,4);
+//		data_ptr->y = acceleration(data_ptr->y,4);
+//		data_ptr->z = acceleration(data_ptr->z,4);
 		sendToAzure(data_ptr);
 		i++;
 		memset(data_ptr, 0, sizeof(struct axes));
