@@ -34,6 +34,13 @@ int main() {
 	writeSPI(fd, tx);
 	delay(55);
 
+	tx[2] = GLOB_CMD | 0x81; tx[3] = 0x00;
+	writeSPI(fd, tx);
+	delay(0.020);
+	tx[2] = GLOB_CMD | 0x80; tx[3] = 0x01;
+	writeSPI(fd, tx);
+	delay(681);
+
 	while(i<5 && tmp != NULL) {
 		// Tell what to record
 		tx[2] = REC_CTRL | 0x81; tx[3] = 0x02;
