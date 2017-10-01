@@ -27,54 +27,44 @@ int main() {
 	}
 
 	// Software reset
-	tx[2] = GLOB_CMD & 0x81; tx[3] = 0x00;
+	tx[2] = GLOB_CMD | 0x81; tx[3] = 0x00;
 	writeSPI(fd, tx);
 	delay(0.020);
-	tx[2] = GLOB_CMD & 0x80; tx[3] = 0x40;
+	tx[2] = GLOB_CMD | 0x80; tx[3] = 0x40;
 	writeSPI(fd, tx);
 	delay(55);
-	tx[3] = 0x00;
 
 	while(i<50 && tmp != NULL) {
 		// Tell what to record
-		tx[2] = REC_CTRL & 0x81; tx[3] = 0x02;
+		tx[2] = REC_CTRL | 0x81; tx[3] = 0x02;
 		writeSPI(fd, tx);
 		delay(0.020);
-		tx[2] = REC_CTRL & 0x80; tx[3] = 0x32;
+		tx[2] = REC_CTRL | 0x80; tx[3] = 0x32;
 		writeSPI(fd, tx);
 		delay(0.020);
 
 		// Start recording
-		tx[2] = GLOB_CMD & 0x80; tx[3] = 0x00;
+		tx[2] = GLOB_CMD | 0x80; tx[3] = 0x00;
 		writeSPI(fd, tx);
 		delay(0.020);
-		tx[2] = GLOB_CMD & 0x81; tx[3] = 0x08;
+		tx[2] = GLOB_CMD | 0x81; tx[3] = 0x08;
 		writeSPI(fd, tx);
 		delay(50);
 
 		// Read values from buffers
-		tx[2] = X_BUF & 0x70; tx[3] = 0x00;
-		writeSPI(fd, tx);
-		delay(0.020);
-		tx[2] = 0x00;
+		tx[2] = X_BUF | 0x70; tx[3] = 0x00;
 		writeSPI(fd, tx);
 		delay(0.020);
 		data_ptr->x = readSPI(fd, tx);
 		delay(0.020);
 
-		tx[2] = Y_BUF & 0x70;
-		writeSPI(fd, tx);
-		delay(0.020);
-		tx[2] = 0x00;
+		tx[2] = Y_BUF | 0x70;
 		writeSPI(fd, tx);
 		delay(0.020);
 		data_ptr->y = readSPI(fd, tx);
 		delay(0.020);
 
-		tx[2] = Z_BUF & 0x70;
-		writeSPI(fd, tx);
-		delay(0.020);
-		tx[2] = 0x00;
+		tx[2] = Z_BUF | 0x70;
 		writeSPI(fd, tx);
 		delay(0.020);
 		data_ptr->z = readSPI(fd, tx);
