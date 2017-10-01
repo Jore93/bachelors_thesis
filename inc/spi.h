@@ -27,7 +27,8 @@ extern "C" {
 
 #include "reg_def.h"
 
-#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+#define ARRAY_SIZE(a) 	(sizeof(a) / sizeof((a)[0]))
+#define SAMPLES			256
 
 struct axes {
 	int16_t x;
