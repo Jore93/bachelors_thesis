@@ -13,6 +13,7 @@ static void pabort(const char *s) {
 }
 
 void initSPI(int *fd, const char *device, uint8_t mode, uint8_t bits, uint32_t speed) {
+	// Initialize SPI, first open SPI and then set up mode, bits per word and max speed
 	int ret;
 	uint8_t tx[4] = {0};
 
@@ -101,6 +102,7 @@ void writeSPI(int fd, uint8_t *tx) {
 }
 
 uint16_t readSPI(int fd, uint8_t *tx) {
+	// Similar to writeSPI but this function returns the value that sensor returns
 	uint16_t value;
 	int ret;
 	static uint8_t bits = 8;
@@ -121,23 +123,18 @@ uint16_t readSPI(int fd, uint8_t *tx) {
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	value = (rx[0] << 8) | rx[1];
 
-	for(ret=0;ret<ARRAY_SIZE(tx);ret++) {
-		printf("%.2X ", rx[ret]);
-	}
-	printf("\n");
-
 	if(ret==-1)
 		pabort("Can't read SPI");
 	return value;
 }
 
 void sendToAzure(struct axes *data_ptr) {
-	// Send data from data_ptr to Azure
+	// Send data from data_ptr to Azure, now this only prints data to Terminal
 	printf("x axis: %d mg\ny axis: %d mg\nz axis: %d mg\n\n", data_ptr->x, data_ptr->y, data_ptr->z);
 }
 
 int16_t acceleration(uint16_t value, int range) {
-	/* These calculations are for 0g to 70g range, change the value of n depending on what range you are using.
+	/* These calculations are for 0g to 70g range, change the coefficient n depending on what range you are using.
 	 *
 	 * Range:
 	 * 1: 0g to 1g
@@ -220,6 +217,7 @@ int16_t acceleration(uint16_t value, int range) {
 }
 
 void recordingSettings(int fd) {
+	// Set according table 10 in ADIS16227 datasheet, these control settings for recording data
 	uint8_t tx[4] = {0};
 	tx[2] = REC_CTRL | 0x81; tx[3] = 0x02;
 	writeSPI(fd, tx);
@@ -230,6 +228,7 @@ void recordingSettings(int fd) {
 }
 
 void startRecording(int fd) {
+	// This command starts recording using settings written to REC_CTRL register in recordingSettings() function
 	uint8_t tx[4] = {0};
 	tx[2] = GLOB_CMD | 0x80; tx[3] = 0x00;
 	writeSPI(fd, tx);
@@ -240,6 +239,7 @@ void startRecording(int fd) {
 }
 
 void readBuffers(int fd, struct axes *data_ptr) {
+	// Read data for x-, y- and z-axis, every measurement has 256 samples for every axis.
 	uint8_t tx[4] = {0};
 	uint8_t value;
 	tx[2] = X_BUF; tx[3] = 0x00;
@@ -267,6 +267,7 @@ void readBuffers(int fd, struct axes *data_ptr) {
 
 
 void delay (unsigned int howLong) {
+	// Delay in milliseconds
   struct timespec sleeper, dummy ;
 
   sleeper.tv_sec  = (time_t)(howLong / 1000) ;
@@ -274,4 +275,3 @@ void delay (unsigned int howLong) {
 
   nanosleep (&sleeper, &dummy) ;
 }
-

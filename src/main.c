@@ -24,7 +24,7 @@ int main() {
 		initSPI(&fd, device, mode, bits, speed);
 	}
 
-	while(/*i<5 &&*/ tmp != NULL) {
+	while(tmp != NULL) {
 		recordingSettings(fd);
 		startRecording(fd);
 		readBuffers(fd, data_ptr);
@@ -37,5 +37,3 @@ int main() {
 		free(data_ptr);
 	}
 }
-
-
