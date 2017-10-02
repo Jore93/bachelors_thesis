@@ -121,11 +121,11 @@ uint16_t readSPI(int fd, uint8_t *tx) {
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	value = (rx[0] << 8) | rx[1];
 
-	for(ret=0;ret<ARRAY_SIZE(tx);ret++) {
+/*	for(ret=0;ret<ARRAY_SIZE(tx);ret++) {
 		printf("%.2X ", rx[ret]);
 	}
 	printf("\n");
-
+*/
 	if(ret==-1)
 		pabort("Can't read SPI");
 	return value;
@@ -241,28 +241,36 @@ void startRecording(int fd) {
 
 void readBuffers(int fd, struct axes *data_ptr) {
 	uint8_t tx[4] = {0};
-	uint8_t value;
+	uint8_t value, i;
 	tx[2] = X_BUF; tx[3] = 0x00;
 	writeSPI(fd, tx);
 	delay(0.020);
-	value= readSPI(fd, tx);
+	for(i=0, value = 0; i<SAMPLES;i++) {
+		value += readSPI(fd, tx);
+		delay(0.020);
+	}
+	value = value >> 8;
 	data_ptr->x = acceleration(value, 4);
-	delay(0.020);
 
 	tx[2] = Y_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
-	value= readSPI(fd, tx);
+	for(i=0, value = 0; i<SAMPLES;i++) {
+		value += readSPI(fd, tx);
+		delay(0.020);
+	}
+	value = value >> 8;
 	data_ptr->y = acceleration(value, 4);
-	delay(0.020);
-
 
 	tx[2] = Z_BUF;
 	writeSPI(fd, tx);
 	delay(0.020);
-	value= readSPI(fd, tx);
+	for(i=0, value = 0; i<SAMPLES;i++) {
+		value += readSPI(fd, tx);
+		delay(0.020);
+	}
+	value = value >> 8;
 	data_ptr->z = acceleration(value, 4);
-	delay(0.020);
 }
 
 
